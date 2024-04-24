@@ -46,13 +46,13 @@ export const Window = ({
         ) : (
           <>
             <div
-              className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 cursor-pointer"
+              className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer"
               onClick={() => handleParkingSearch(getRestrictedTags())}
             >
               Show Sidewalks
             </div>
 
-            <CheckBox
+            {/* <CheckBox
               isChecked={excludeStreetSide}
               setIsChecked={setExcludeStreetSide}
             >
@@ -64,7 +64,7 @@ export const Window = ({
               setIsChecked={setExcludePrivate}
             >
               Exclude private parking
-            </CheckBox>
+            </CheckBox> */}
           </>
         )}
 
