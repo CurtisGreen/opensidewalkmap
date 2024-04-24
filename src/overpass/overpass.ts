@@ -7,92 +7,68 @@ export const overpassQuery = async (
 ) => {
   const bbox = `${bounds.getSouth()},${bounds.getWest()},${bounds.getNorth()},${bounds.getEast()}`;
 
-  const body = `
-  [out:json][bbox:${bbox}];
-  (
-    way[amenity=parking]${restrictParkingTags
-      .map(({ key, tag }) => `[${key}!~"${tag}"]`)
-      .join("")};
-    relation[amenity=parking]${restrictParkingTags
-      .map(({ key, tag }) => `[${key}!~"${tag}"]`)
-      .join("")};      
-  )->.x1;
-  nwr.x1->.result;
-  (.result; - .done;)->.result;
-  .result out meta geom qt;
-`;
+  // const test = `
+  //   [out:json];
+  //   (
+  //     way[highway=footway]({{bbox}});
+  //     way[highway=path][foot=designated]({{bbox}});
+  //   );
+  //   out body;
+  //   >;
+  //   out skel qt;
+  // `;
 
-  const convertToGeoJSON = async (body: string): Promise<FeatureCollection> => {
-    const response = await fetch("https://overpass-api.de/api/interpreter", {
-      body,
-      method: "POST",
-    });
-    const data = await response.json();
+  const query = `
+    [out:json][bbox:${bbox}];
+    (
+      way[highway=footway];
+      way[highway=path][foot=designated];    
+    )->.x1;
+    nwr.x1->.result;
+    (.result; - .done;)->.result;
+    .result out meta geom qt;
+  `;
 
-    const geojson: FeatureCollection = {
-      type: "FeatureCollection",
-      features: data.elements.map((element: any): Feature => {
-        let geometry: Geometry;
+  const response = await fetch("https://overpass-api.de/api/interpreter", {
+    body: query,
+    method: "POST",
+  });
+  const data = await response.json();
 
-        if (element.type === "way") {
-          // Single polygon
-          geometry = {
-            type: "Polygon",
-            coordinates: [
-              element.geometry.map(
-                (latLngObj: any) => [latLngObj.lon, latLngObj.lat] as Position
-              ),
-            ],
-          };
-        } else if (
-          element.type === "relation" &&
-          element.tags.type === "multipolygon"
-        ) {
-          // Multipolygon
-          const coordinates: Position[][][] = [];
-          const outerRings: Position[][] = [];
-          const innerRings: Position[][] = [];
+  return convertToGeoJSON(data);
+};
 
-          element.members.forEach((member: any) => {
-            const ring = member.geometry.map(
+const convertToGeoJSON = (data: any): FeatureCollection => {
+  const geojson: FeatureCollection = {
+    type: "FeatureCollection",
+    features: data.elements.map((element: any): Feature => {
+      let geometry: Geometry;
+
+      if (element.type === "way") {
+        // Single polygon
+        geometry = {
+          type: "MultiLineString",
+          coordinates: [
+            element.geometry.map(
               (latLngObj: any) => [latLngObj.lon, latLngObj.lat] as Position
-            );
-            if (member.role === "outer") {
-              outerRings.push(ring);
-            } else if (member.role === "inner") {
-              innerRings.push(ring);
-            }
-          });
-
-          // Assuming each multipolygon only has one outer ring for simplicity
-          // More complex handling may be needed for multiple outer rings
-          if (outerRings.length > 0) {
-            coordinates.push([outerRings[0], ...innerRings]);
-          }
-
-          geometry = {
-            type: "MultiPolygon",
-            coordinates: coordinates,
-          };
-        } else {
-          // Default or other geometry types
-          geometry = {
-            type: "GeometryCollection",
-            geometries: [],
-          };
-        }
-
-        return {
-          type: "Feature",
-          geometry: geometry,
-          properties: element.tags,
+            ),
+          ],
         };
-      }),
-    };
+      } else {
+        // Default or other geometry types
+        geometry = {
+          type: "GeometryCollection",
+          geometries: [],
+        };
+      }
 
-    return geojson;
+      return {
+        type: "Feature",
+        geometry: geometry,
+        properties: element.tags,
+      };
+    }),
   };
 
-  const geojson = await convertToGeoJSON(body);
   return geojson;
 };

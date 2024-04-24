@@ -118,11 +118,11 @@ export const MainMap = ({
         <Source type="geojson" data={parkingLots}>
           <Layer
             id="parkingData"
-            type="fill"
+            type="line"
             paint={{
-              "fill-color": "red",
-              "fill-opacity": 0.8,
-              "fill-outline-color": "black",
+              "line-color": "red",
+              "line-opacity": 0.8,
+              "line-width": 3,
             }}
           />
         </Source>

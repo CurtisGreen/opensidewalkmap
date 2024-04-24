@@ -29,7 +29,7 @@ export const Window = ({
       <div className="bg-white p-4 rounded-lg shadow-md w-full max-w-md w-80">
         <h2 className="text-2xl font-semibold mb-4 text-blue-500">
           <div style={{ display: "flex", alignItems: "center" }}>
-            <span style={{ marginRight: "0.5rem" }}>OpenParkingMap</span>
+            <span style={{ marginRight: "0.5rem" }}>OpenSidewalkMap</span>
             <div
               onClick={() => setShowInfoModal(true)}
               className="cursor-pointer"
@@ -49,7 +49,7 @@ export const Window = ({
               className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 cursor-pointer"
               onClick={() => handleParkingSearch(getRestrictedTags())}
             >
-              Show At-Grade Parking
+              Show Sidewalks
             </div>
 
             <CheckBox

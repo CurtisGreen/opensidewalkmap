@@ -1,6 +1,5 @@
 import { useRef } from "react";
 import { Dialog } from "@headlessui/react";
-import { EnvelopeIcon } from "@heroicons/react/24/outline";
 import { InfoModalProps } from "@/types/InfoModalProps";
 import { Space } from "@/utils/Space";
 
@@ -66,47 +65,17 @@ export default function InfoModal({
                     as="h3"
                     className="text-base font-semibold leading-6 text-gray-900"
                   >
-                    OpenParkingMap
+                    OpenSidewalkMap
                   </Dialog.Title>
                   <div className="mt-2">
                     <div className="text-sm text-gray-500">
-                      {`OpenParkingMap is a tool for visualizing parking lots in your area using data from OpenStreetMap.`}
+                      {`OpenSidewalkMap is a tool for visualizing sidewalks in your area using data from OpenStreetMap.`}
                       <Space />
-                      {` This project was inspired by reading `}
-                      <Link href="https://www.amazon.com/High-Cost-Free-Parking-Updated/dp/193236496X">
-                        {` The High Cost of Free Parking`}
+                      {` This project was forked from `}
+                      <Link href="https://www.openparkingmap.com">
+                        {` OpenParkingMap.com`}
                       </Link>
-                      {`, by Donald Shoup. From the description:`}
-                      <Space />
-                      <blockquote className="pl-4 border-l-2 border-gray-400">
-                        {`Planners mandate free parking to alleviate
-                            congestion but end up distorting transportation
-                            choices, debasing urban design, damaging the
-                            economy, and degrading the environment. Ubiquitous
-                            free parking helps explain why our cities sprawl on
-                            a scale fit more for cars than for people, and why
-                            American motor vehicles now consume one-eighth of
-                            the world's total oil production. But it doesn't
-                            have to be this way.`}
-                      </blockquote>
-                      <br />
-                      <Link href="https://www.nytimes.com/2023/03/07/business/fewer-parking-spots.html">
-                        {`Here's`}
-                      </Link>{" "}
-                      {`a good recent NYT article on the subject. Also, check out `}
-                      <a
-                        className="text-blue-600 hover:text-blue-800"
-                        href="https://parkingreform.org/"
-                        target="_blank"
-                        rel="noreferrer noopener"
-                      ></a>
-                      <Link href="https://parkingreform.org/">
-                        {`The Parking Reform Network`}
-                      </Link>
-                      {"."}
-                      <Space />
-                      <Link href="https://docs.google.com/document/d/1zkdJOf0GWJPLXuNRX8FdMbTHkyBArEOQh3CIuAtTeGM">{`Here`}</Link>
-                      {` is a resource from Parking Report Network that gives instructions on how to add parking lots to OpenStreetMap.`}
+                      {`, by Brandon Cohen`}
                       <Space />
                       {`Get in touch with me below.`}
                     </div>
@@ -115,12 +84,7 @@ export default function InfoModal({
               </div>
             </div>
             <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-              <Link href="mailto:brandon@openparkingmap.com">
-                <div className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
-                  <EnvelopeIcon className="w-5 h-5" />
-                </div>
-              </Link>
-              <Link href="https://github.com/brandonfcohen1/openparkingmap/">
+              <Link href="https://github.com/curtisgreen/opensidewalkmap/">
                 <div className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-2">
                   <GithubIcon className="w-5 h-5" />
                 </div>
