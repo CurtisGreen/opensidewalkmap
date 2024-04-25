@@ -22,7 +22,9 @@ export const overpassQuery = async (
     [out:json][bbox:${bbox}];
     (
       way[highway=footway];
-      way[highway=path][foot=designated];    
+      way[highway=steps];
+      way[highway=path][foot=designated];
+      way[highway=cycleway][foot=yes];
     )->.x1;
     nwr.x1->.result;
     (.result; - .done;)->.result;
