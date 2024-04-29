@@ -1,5 +1,6 @@
 import { LngLatBounds } from "mapbox-gl";
 import { FeatureCollection, MultiLineString } from "geojson";
+import { OverpassResponse } from "@/types/OverpassTypes";
 
 export const overpassQuery = async (
   bounds: LngLatBounds,

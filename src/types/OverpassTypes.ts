@@ -1,4 +1,4 @@
-type OverpassResponse = {
+export type OverpassResponse = {
   elements: WayElement[];
   generator: string;
   osm3s: {

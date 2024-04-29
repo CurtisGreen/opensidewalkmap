@@ -105,7 +105,7 @@ export const MainMap = ({
             ref={geolocateControlRef}
             positionOptions={{ enableHighAccuracy: true }}
             trackUserLocation={true}
-            onGeolocate={(pos) => {
+            onGeolocate={(pos: GeolocationPosition) => {
               setViewport({
                 ...viewport,
                 latitude: pos.coords.latitude,
