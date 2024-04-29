@@ -71,7 +71,7 @@ export default function InfoModal({
                     <div className="text-sm text-gray-500">
                       {`OpenSidewalkMap is a tool for visualizing sidewalks in your area using data from OpenStreetMap.`}
                       <Space />
-                      {` This project was forked from `}
+                      {` This project is based on `}
                       <Link href="https://www.openparkingmap.com">
                         {` OpenParkingMap.com`}
                       </Link>
@@ -86,6 +86,7 @@ export default function InfoModal({
             <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
               <Link href="https://github.com/curtisgreen/opensidewalkmap/">
                 <div className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 mr-2">
+                  <div className="pr-2">Curtis Green</div>
                   <GithubIcon className="w-5 h-5" />
                 </div>
               </Link>

@@ -4,7 +4,7 @@ import { LngLatBounds } from "mapbox-gl";
 import { overpassQuery } from "@/overpass/overpass";
 import { FeatureCollection } from "geojson";
 import { Window } from "@/components/Window";
-import { analyzeParking } from "@/utils/analyzeParking";
+import { analyzeArea } from "@/utils/analyzeArea";
 import { validateViewport } from "@/utils/validateViewport";
 import { defaultViewport } from "@/config/defaults";
 import { MainMap } from "@/components/MainMap";
@@ -13,11 +13,11 @@ export const MainPage = () => {
   const [bounds, setBounds] = useState<LngLatBounds>();
   const [savedBounds, setSavedBounds] = useState<LngLatBounds>();
   const [loading, setLoading] = useState(false);
-  const [parkingLots, setParkingLots] = useState({
+  const [featureCollection, setFeatureCollection] = useState({
     type: "FeatureCollection",
     features: [],
   } as FeatureCollection);
-  const [parkingArea, setParkingArea] = useState(0);
+  const [totalArea, setTotalArea] = useState(0);
   const [windowBoundArea, setWindowBoundArea] = useState(0);
   const [showZoomModal, setShowZoomModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
@@ -62,15 +62,15 @@ export const MainPage = () => {
     setSavedBounds(bounds);
 
     try {
-      const parking = await overpassQuery(bounds, restrictTags);
-      setParkingLots(parking);
+      const geoJSON = await overpassQuery(bounds, restrictTags);
+      setFeatureCollection(geoJSON);
       setLoading(false);
 
-      const { totalParkingArea, boundArea } = analyzeParking({
-        parking,
+      const { totalArea: calculatedArea, boundArea } = analyzeArea({
+        featureCollection: geoJSON,
         bounds,
       });
-      setParkingArea(totalParkingArea);
+      setTotalArea(calculatedArea);
       setWindowBoundArea(boundArea);
       setError(false);
     } catch (e) {
@@ -80,46 +80,44 @@ export const MainPage = () => {
   };
 
   const downloadData = () => {
-    const parkingData = JSON.stringify(parkingLots);
-    const parkingDataBlob = new Blob([parkingData], {
+    const geometry = JSON.stringify(featureCollection);
+    const geometryBlob = new Blob([geometry], {
       type: "application/json",
     });
-    const parkingDataUrl = URL.createObjectURL(parkingDataBlob);
+    const geometryUrl = URL.createObjectURL(geometryBlob);
     const link = document.createElement("a");
-    link.href = parkingDataUrl;
-    link.download = "parkingData.json";
+    link.href = geometryUrl;
+    link.download = "sidewalkData.json";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
   return (
-    <>
-      <div className="map-page">
-        <Window
-          handleParkingSearch={handleParkingSearch}
-          loading={loading}
-          parkingArea={parkingArea}
-          windowBoundArea={windowBoundArea}
-          setShowInfoModal={setShowInfoModal}
-          error={error}
-          downloadData={downloadData}
-        />
-        <MainMap
-          showZoomModal={showZoomModal}
-          setShowZoomModal={setShowZoomModal}
-          showInfoModal={showInfoModal}
-          setShowInfoModal={setShowInfoModal}
-          loading={loading}
-          parkingLots={parkingLots}
-          savedBounds={savedBounds}
-          setBounds={setBounds}
-          viewport={viewport}
-          setViewport={setViewport}
-          mapRef={mapRef}
-        />
-      </div>
-    </>
+    <div className="map-page">
+      <Window
+        handleParkingSearch={handleParkingSearch}
+        loading={loading}
+        parkingArea={totalArea}
+        windowBoundArea={windowBoundArea}
+        setShowInfoModal={setShowInfoModal}
+        error={error}
+        downloadData={downloadData}
+      />
+      <MainMap
+        showZoomModal={showZoomModal}
+        setShowZoomModal={setShowZoomModal}
+        showInfoModal={showInfoModal}
+        setShowInfoModal={setShowInfoModal}
+        loading={loading}
+        parkingLots={featureCollection}
+        savedBounds={savedBounds}
+        setBounds={setBounds}
+        viewport={viewport}
+        setViewport={setViewport}
+        mapRef={mapRef}
+      />
+    </div>
   );
 };
 
