@@ -37,7 +37,7 @@ export default function Modal({
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                      Zoom in to view parking data.
+                      Zoom in to view data.
                     </p>
                   </div>
                 </div>
