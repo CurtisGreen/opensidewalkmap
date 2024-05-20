@@ -3,7 +3,7 @@ import { LngLatBounds } from "mapbox-gl";
 import { FeatureCollection } from "geojson";
 
 export interface MapProps {
-  parkingLots: FeatureCollection;
+  sidewalkFeatureCollection: FeatureCollection;
   loading: boolean;
   savedBounds: LngLatBounds | undefined;
   showZoomModal: boolean;

@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import { LngLatBounds } from "mapbox-gl";
-import { overpassQuery } from "@/overpass/overpass";
 import { FeatureCollection } from "geojson";
+import { MapRef } from "react-map-gl";
+
 import { Window } from "@/components/Window";
-import { analyzeArea } from "@/utils/analyzeArea";
 import { validateViewport } from "@/utils/validateViewport";
 import { defaultViewport } from "@/config/defaults";
 import { MainMap } from "@/components/MainMap";
@@ -12,105 +12,51 @@ import { MainMap } from "@/components/MainMap";
 export const MainPage = () => {
   const [bounds, setBounds] = useState<LngLatBounds>();
   const [savedBounds, setSavedBounds] = useState<LngLatBounds>();
-  const [loading, setLoading] = useState(false);
   const [featureCollection, setFeatureCollection] = useState({
     type: "FeatureCollection",
     features: [],
   } as FeatureCollection);
-  const [totalArea, setTotalArea] = useState(0);
-  const [windowBoundArea, setWindowBoundArea] = useState(0);
-  const [showZoomModal, setShowZoomModal] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
   const [viewport, setViewport] = useState(defaultViewport);
-  const [error, setError] = useState(false);
-
-  const mapRef = useRef<any>(null);
-
+  const mapRef = useRef<MapRef>(null);
   const router = useRouter();
-  const { latitude, longitude, zoom } = router.query;
 
+  // Init map location from URL
   useEffect(() => {
+    const { latitude, longitude, zoom } = router.query;
+
     const isValidViewport = validateViewport(latitude, longitude, zoom);
+    if (!isValidViewport || !mapRef.current) return;
 
-    if (isValidViewport && mapRef.current) {
-      const map = mapRef.current.getMap();
+    const lat = Number(latitude);
+    const lon = Number(longitude);
+    const z = Number(zoom);
+
+    const map = mapRef.current.getMap();
+    const mapCenter = map.getCenter();
+    const latChanged = lat.toFixed(2) != mapCenter.lat.toFixed(2);
+    const lonChanged = lon.toFixed(2) != mapCenter.lng.toFixed(2);
+    const zoomChanged = z.toFixed(2) != map.getZoom().toFixed(2);
+
+    // Prevent
+    if (latChanged || lonChanged || zoomChanged) {
       map.jumpTo({
-        center: [Number(longitude), Number(latitude)],
-        zoom: Number(zoom),
-      });
-      setViewport({
-        latitude: Number(latitude),
-        longitude: Number(longitude),
-        zoom: Number(zoom),
+        center: [lon, lat],
+        zoom: z,
       });
     }
-  }, [latitude, longitude, zoom]);
-
-  const handleParkingSearch = async (
-    restrictTags: { key: string; tag: string }[]
-  ) => {
-    if (viewport.zoom < 13) {
-      setShowZoomModal(true);
-      return;
-    }
-
-    if (!bounds) {
-      return;
-    }
-
-    setLoading(true);
-    setSavedBounds(bounds);
-
-    try {
-      const geoJSON = await overpassQuery(bounds, restrictTags);
-      setFeatureCollection(geoJSON);
-      setLoading(false);
-
-      const { totalArea: calculatedArea, boundArea } = analyzeArea({
-        featureCollection: geoJSON,
-        bounds,
-      });
-      setTotalArea(calculatedArea);
-      setWindowBoundArea(boundArea);
-      setError(false);
-    } catch (e) {
-      setLoading(false);
-      setError(true);
-    }
-  };
-
-  const downloadData = () => {
-    const geometry = JSON.stringify(featureCollection);
-    const geometryBlob = new Blob([geometry], {
-      type: "application/json",
-    });
-    const geometryUrl = URL.createObjectURL(geometryBlob);
-    const link = document.createElement("a");
-    link.href = geometryUrl;
-    link.download = "sidewalkData.json";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  }, [router.query]);
 
   return (
     <div className="map-page">
       <Window
-        handleParkingSearch={handleParkingSearch}
-        loading={loading}
-        parkingArea={totalArea}
-        windowBoundArea={windowBoundArea}
-        setShowInfoModal={setShowInfoModal}
-        error={error}
-        downloadData={downloadData}
+        bounds={bounds}
+        setSavedBounds={setSavedBounds}
+        featureCollection={featureCollection}
+        setFeatureCollection={setFeatureCollection}
+        viewport={viewport}
       />
       <MainMap
-        showZoomModal={showZoomModal}
-        setShowZoomModal={setShowZoomModal}
-        showInfoModal={showInfoModal}
-        setShowInfoModal={setShowInfoModal}
-        loading={loading}
-        parkingLots={featureCollection}
+        sidewalkFeatureCollection={featureCollection}
         savedBounds={savedBounds}
         setBounds={setBounds}
         viewport={viewport}

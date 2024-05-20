@@ -2,22 +2,8 @@ import { LngLatBounds } from "mapbox-gl";
 import { FeatureCollection, MultiLineString } from "geojson";
 import { OverpassResponse } from "@/types/OverpassTypes";
 
-export const overpassQuery = async (
-  bounds: LngLatBounds,
-  restrictParkingTags: { key: string; tag: string }[]
-) => {
+export const overpassQuery = async (bounds: LngLatBounds) => {
   const bbox = `${bounds.getSouth()},${bounds.getWest()},${bounds.getNorth()},${bounds.getEast()}`;
-
-  // const test = `
-  //   [out:json];
-  //   (
-  //     way[highway=footway]({{bbox}});
-  //     way[highway=path][foot=designated]({{bbox}});
-  //   );
-  //   out body;
-  //   >;
-  //   out skel qt;
-  // `;
 
   const query = `
     [out:json][bbox:${bbox}];
