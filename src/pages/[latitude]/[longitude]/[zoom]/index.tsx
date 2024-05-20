@@ -19,32 +19,27 @@ export const MainPage = () => {
   const [viewport, setViewport] = useState(defaultViewport);
   const mapRef = useRef<MapRef>(null);
   const router = useRouter();
+  const [initialized, setInitialized] = useState(false);
+  const { latitude, longitude, zoom } = router.query;
 
   // Init map location from URL
   useEffect(() => {
-    const { latitude, longitude, zoom } = router.query;
-
     const isValidViewport = validateViewport(latitude, longitude, zoom);
     if (!isValidViewport || !mapRef.current) return;
 
     const lat = Number(latitude);
-    const lon = Number(longitude);
+    const lng = Number(longitude);
     const z = Number(zoom);
 
-    const map = mapRef.current.getMap();
-    const mapCenter = map.getCenter();
-    const latChanged = lat.toFixed(2) != mapCenter.lat.toFixed(2);
-    const lonChanged = lon.toFixed(2) != mapCenter.lng.toFixed(2);
-    const zoomChanged = z.toFixed(2) != map.getZoom().toFixed(2);
-
-    // Prevent
-    if (latChanged || lonChanged || zoomChanged) {
+    if (!initialized) {
+      const map = mapRef.current.getMap();
       map.jumpTo({
-        center: [lon, lat],
+        center: [lng, lat],
         zoom: z,
       });
+      setInitialized(true);
     }
-  }, [router.query]);
+  }, [initialized, latitude, longitude, zoom]);
 
   return (
     <div className="map-page">
