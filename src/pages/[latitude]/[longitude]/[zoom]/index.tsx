@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import { LngLatBounds } from "mapbox-gl";
 import { FeatureCollection } from "geojson";
-import { MapRef } from "react-map-gl";
 
 import { Window } from "@/components/Window";
-import { validateViewport } from "@/utils/validateViewport";
 import { defaultViewport } from "@/config/defaults";
 import { MainMap } from "@/components/MainMap";
+import { validateViewport } from "@/utils/validateViewport";
+import { useRouter } from "next/router";
 
 export const MainPage = () => {
   const [bounds, setBounds] = useState<LngLatBounds>();
@@ -17,39 +16,24 @@ export const MainPage = () => {
     features: [],
   } as FeatureCollection);
   const [viewport, setViewport] = useState(defaultViewport);
-  const mapRef = useRef<MapRef>(null);
   const router = useRouter();
   const [initialized, setInitialized] = useState(false);
   const { latitude, longitude, zoom } = router.query;
 
-  // Init map location from URL or local storage
+  // Init map location from URL
   useEffect(() => {
-    const isValidViewport = validateViewport(latitude, longitude, zoom);
-    if (!isValidViewport || !mapRef.current) return;
     if (initialized) return;
 
-    const urlLatitude = Number(latitude);
-    const urlLongitude = Number(longitude);
-    const urlZoom = Number(zoom);
+    const isValidViewport = validateViewport(latitude, longitude, zoom);
+    if (!isValidViewport) return setInitialized(true);
 
-    const localLatitude = localStorage.getItem("latitude") as string;
-    const localLongitude = localStorage.getItem("longitude") as string;
-    const localZoom = localStorage.getItem("zoom") as string;
-
-    const map = mapRef.current.getMap();
-    if (localLatitude || localLongitude || localZoom)
-      map.jumpTo({
-        center: [urlLongitude, urlLatitude],
-        zoom: urlZoom,
-      });
-    else if (urlLatitude || urlLongitude || urlZoom)
-      map.jumpTo({
-        center: [urlLongitude, urlLatitude],
-        zoom: urlZoom,
-      });
-
+    setViewport({
+      latitude: Number(latitude),
+      longitude: Number(longitude),
+      zoom: Number(zoom),
+    });
     setInitialized(true);
-  }, [initialized, latitude, longitude, zoom]);
+  }, [initialized, latitude, longitude, setViewport, zoom]);
 
   return (
     <div className="map-page">
@@ -60,14 +44,15 @@ export const MainPage = () => {
         setFeatureCollection={setFeatureCollection}
         viewport={viewport}
       />
-      <MainMap
-        sidewalkFeatureCollection={featureCollection}
-        savedBounds={savedBounds}
-        setBounds={setBounds}
-        viewport={viewport}
-        setViewport={setViewport}
-        mapRef={mapRef}
-      />
+      {initialized && (
+        <MainMap
+          sidewalkFeatureCollection={featureCollection}
+          savedBounds={savedBounds}
+          setBounds={setBounds}
+          viewport={viewport}
+          setViewport={setViewport}
+        />
+      )}
     </div>
   );
 };

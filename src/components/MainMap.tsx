@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import mapboxgl from "mapbox-gl";
-import Map, { Source, Layer, GeolocateControl, MapRef } from "react-map-gl";
-import { LngLatBounds } from "mapbox-gl";
+import mapboxgl, { LngLatBounds } from "mapbox-gl";
+import Map, { Source, Layer, GeolocateControl, MapboxMap } from "react-map-gl";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import { FeatureCollection } from "geojson";
@@ -18,7 +17,6 @@ interface MapProps {
   setBounds: (bounds: LngLatBounds) => void;
   viewport: ViewportProps;
   setViewport: (viewport: ViewportProps) => void;
-  mapRef: React.RefObject<MapRef>;
 }
 export const MainMap = ({
   sidewalkFeatureCollection,
@@ -26,35 +24,32 @@ export const MainMap = ({
   setBounds,
   viewport,
   setViewport,
-  mapRef,
 }: MapProps) => {
   const geocoderContainerRef = useRef<any>(null);
   const geolocateControlRef = useRef<any>(null);
-  const [mapInstance, setMapInstance] = useState<any>();
-
   const router = useRouter();
+  const [mapInstance, setMapInstance] = useState<MapboxMap>();
 
   useEffect(() => {
-    if (mapInstance) {
-      const center = mapInstance.getCenter();
-      const geocoder = new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl,
-        marker: false,
-        proximity: {
-          longitude: center.lng,
-          latitude: center.lat,
-        },
-      });
-      geocoder.addTo(geocoderContainerRef.current);
+    if (!mapInstance) return;
+    const center = mapInstance.getCenter();
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl,
+      marker: false,
+      proximity: {
+        longitude: center.lng,
+        latitude: center.lat,
+      },
+    });
+    geocoder.addTo(geocoderContainerRef.current);
 
-      geocoder.on("result", (e) => {
-        mapInstance.flyTo({
-          center: e.result.center,
-          zoom: 14,
-        });
+    geocoder.on("result", (e) => {
+      mapInstance.flyTo({
+        center: e.result.center,
+        zoom: 14,
       });
-    }
+    });
   }, [mapInstance]);
 
   const updateURL = (latitude: number, longitude: number, zoom: number) => {
@@ -64,9 +59,9 @@ export const MainMap = ({
   };
 
   const saveLocation = (latitude: number, longitude: number, zoom: number) => {
-    localStorage.setItem("latitude", latitude.toString());
-    localStorage.setItem("longitude", longitude.toString());
-    localStorage.setItem("zoom", zoom.toString());
+    localStorage.setItem("latitude", latitude.toFixed(7));
+    localStorage.setItem("longitude", longitude.toFixed(7));
+    localStorage.setItem("zoom", zoom.toFixed(2));
   };
 
   return (
@@ -91,7 +86,6 @@ export const MainMap = ({
             zoom: e.target.getZoom(),
           });
         }}
-        ref={mapRef}
         onLoad={(e) => {
           setMapInstance(e.target);
         }}
