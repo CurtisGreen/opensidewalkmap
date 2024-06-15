@@ -22,23 +22,33 @@ export const MainPage = () => {
   const [initialized, setInitialized] = useState(false);
   const { latitude, longitude, zoom } = router.query;
 
-  // Init map location from URL
+  // Init map location from URL or local storage
   useEffect(() => {
     const isValidViewport = validateViewport(latitude, longitude, zoom);
     if (!isValidViewport || !mapRef.current) return;
+    if (initialized) return;
 
-    const lat = Number(latitude);
-    const lng = Number(longitude);
-    const z = Number(zoom);
+    const urlLatitude = Number(latitude);
+    const urlLongitude = Number(longitude);
+    const urlZoom = Number(zoom);
 
-    if (!initialized) {
-      const map = mapRef.current.getMap();
+    const localLatitude = localStorage.getItem("latitude") as string;
+    const localLongitude = localStorage.getItem("longitude") as string;
+    const localZoom = localStorage.getItem("zoom") as string;
+
+    const map = mapRef.current.getMap();
+    if (localLatitude || localLongitude || localZoom)
       map.jumpTo({
-        center: [lng, lat],
-        zoom: z,
+        center: [urlLongitude, urlLatitude],
+        zoom: urlZoom,
       });
-      setInitialized(true);
-    }
+    else if (urlLatitude || urlLongitude || urlZoom)
+      map.jumpTo({
+        center: [urlLongitude, urlLatitude],
+        zoom: urlZoom,
+      });
+
+    setInitialized(true);
   }, [initialized, latitude, longitude, zoom]);
 
   return (
