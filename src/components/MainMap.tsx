@@ -78,17 +78,8 @@ export const MainMap = ({
           updateURL(latitude, longitude, zoom);
           saveLocation(latitude, longitude, zoom);
         }}
-        onRender={(e) => {
-          setBounds(e.target.getBounds());
-          setViewport({
-            longitude: e.target.getCenter().lng,
-            latitude: e.target.getCenter().lat,
-            zoom: e.target.getZoom(),
-          });
-        }}
-        onLoad={(e) => {
-          setMapInstance(e.target);
-        }}
+        onRender={(e) => setBounds(e.target.getBounds())}
+        onLoad={(e) => setMapInstance(e.target)}
       >
         <div className="z-1 absolute bottom-4 left-4">
           <GeolocateControl
