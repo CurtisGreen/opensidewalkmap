@@ -25,7 +25,7 @@ export const MainPage = () => {
     if (initialized) return;
 
     const isValidViewport = validateViewport(latitude, longitude, zoom);
-    if (!isValidViewport) return setInitialized(true);
+    if (!isValidViewport) return;
 
     setViewport({
       latitude: Number(latitude),
