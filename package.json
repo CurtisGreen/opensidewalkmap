@@ -36,5 +36,10 @@
   "browser": {
     "fs": false,
     "child_process": false
-  }
+  },
+  "description": "[OpenSidewalkMap](https://www.opensidewalkmap.com/)",
+  "main": "next.config.js",
+  "keywords": ["transportation", "GIS", "OpenStreetMap", "geospatial"],
+  "author": "",
+  "license": "MIT"
 }
