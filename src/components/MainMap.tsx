@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import mapboxgl from "mapbox-gl";
-import Map, { Source, Layer, GeolocateControl, MapRef } from "react-map-gl";
-import { LngLatBounds } from "mapbox-gl";
+import mapboxgl, { LngLatBounds } from "mapbox-gl";
+import Map, { Source, Layer, GeolocateControl, MapboxMap } from "react-map-gl";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import { FeatureCollection } from "geojson";
@@ -18,7 +17,6 @@ interface MapProps {
   setBounds: (bounds: LngLatBounds) => void;
   viewport: ViewportProps;
   setViewport: (viewport: ViewportProps) => void;
-  mapRef: React.RefObject<MapRef>;
 }
 export const MainMap = ({
   sidewalkFeatureCollection,
@@ -26,41 +24,44 @@ export const MainMap = ({
   setBounds,
   viewport,
   setViewport,
-  mapRef,
 }: MapProps) => {
   const geocoderContainerRef = useRef<any>(null);
   const geolocateControlRef = useRef<any>(null);
-  const [mapInstance, setMapInstance] = useState<any>();
-
   const router = useRouter();
+  const [mapInstance, setMapInstance] = useState<MapboxMap>();
 
   useEffect(() => {
-    if (mapInstance) {
-      const center = mapInstance.getCenter();
-      const geocoder = new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl,
-        marker: false,
-        proximity: {
-          longitude: center.lng,
-          latitude: center.lat,
-        },
-      });
-      geocoder.addTo(geocoderContainerRef.current);
+    if (!mapInstance) return;
+    const center = mapInstance.getCenter();
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl,
+      marker: false,
+      proximity: {
+        longitude: center.lng,
+        latitude: center.lat,
+      },
+    });
+    geocoder.addTo(geocoderContainerRef.current);
 
-      geocoder.on("result", (e) => {
-        mapInstance.flyTo({
-          center: e.result.center,
-          zoom: 14,
-        });
+    geocoder.on("result", (e) => {
+      mapInstance.flyTo({
+        center: e.result.center,
+        zoom: 14,
       });
-    }
+    });
   }, [mapInstance]);
 
   const updateURL = (latitude: number, longitude: number, zoom: number) => {
     router.replace(
       `/${latitude.toFixed(7)}/${longitude.toFixed(7)}/${zoom.toFixed(2)}`
     );
+  };
+
+  const saveLocation = (latitude: number, longitude: number, zoom: number) => {
+    localStorage.setItem("latitude", latitude.toFixed(7));
+    localStorage.setItem("longitude", longitude.toFixed(7));
+    localStorage.setItem("zoom", zoom.toFixed(2));
   };
 
   return (
@@ -70,29 +71,15 @@ export const MainMap = ({
         mapStyle="mapbox://styles/mapbox/outdoors-v12"
         onMoveEnd={async (e) => {
           setBounds(e.target.getBounds());
-          setViewport({
-            longitude: e.target.getCenter().lng,
-            latitude: e.target.getCenter().lat,
-            zoom: e.target.getZoom(),
-          });
-          updateURL(
-            e.target.getCenter().lat,
-            e.target.getCenter().lng,
-            e.target.getZoom()
-          );
+          const latitude = e.target.getCenter().lat;
+          const longitude = e.target.getCenter().lng;
+          const zoom = e.target.getZoom();
+          setViewport({ latitude, longitude, zoom });
+          updateURL(latitude, longitude, zoom);
+          saveLocation(latitude, longitude, zoom);
         }}
-        onRender={(e) => {
-          setBounds(e.target.getBounds());
-          setViewport({
-            longitude: e.target.getCenter().lng,
-            latitude: e.target.getCenter().lat,
-            zoom: e.target.getZoom(),
-          });
-        }}
-        ref={mapRef}
-        onLoad={(e) => {
-          setMapInstance(e.target);
-        }}
+        onRender={(e) => setBounds(e.target.getBounds())}
+        onLoad={(e) => setMapInstance(e.target)}
       >
         <div className="z-1 absolute bottom-4 left-4">
           <GeolocateControl
