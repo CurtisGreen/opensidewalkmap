@@ -1,0 +1,9 @@
+{
+	// https://typedoc.org/ - TypeScript Documentation Generator
+	"entryPoints": ["src"],
+	"entryPointStrategy": "expand",
+	"excludeNotDocumented": false,
+	"projectDocuments": ["documents/**/*.md"],
+	"name": "OpenSidewalkMap",
+	"out": "./docs/"
+}

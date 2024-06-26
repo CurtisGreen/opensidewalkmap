@@ -129,5 +129,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# TypeDoc generated files
+docs/
+
 # Personal workflows
 .TODO.md

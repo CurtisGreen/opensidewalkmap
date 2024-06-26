@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "docs": "typedoc" 
   },
   "dependencies": {
     "@headlessui/react": "^1.7.13",
@@ -31,7 +32,8 @@
     "@types/mapbox-gl": "^2.7.10",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",
-    "tailwindcss": "^3.2.7"
+    "tailwindcss": "^3.2.7",
+    "typedoc": "^0.26.2"
   },
   "browser": {
     "fs": false,
@@ -39,7 +41,12 @@
   },
   "description": "[OpenSidewalkMap](https://www.opensidewalkmap.com/)",
   "main": "next.config.js",
-  "keywords": ["transportation", "GIS", "OpenStreetMap", "geospatial"],
+  "keywords": [
+    "transportation",
+    "GIS",
+    "OpenStreetMap",
+    "geospatial"
+  ],
   "author": "",
   "license": "MIT"
 }
