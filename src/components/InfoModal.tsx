@@ -41,6 +41,9 @@ const Link = ({ href, children }: { href: string; children: any }) => (
   </a>
 );
 
+/**
+ * Renders a modal window with information about the project
+*/
 export default function InfoModal({
   showInfoModal,
   setShowInfoModal,

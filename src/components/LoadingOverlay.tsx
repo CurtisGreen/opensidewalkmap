@@ -1,5 +1,8 @@
 import React from "react";
 
+/**
+ * @group Components
+ */
 const LoadingOverlay = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">

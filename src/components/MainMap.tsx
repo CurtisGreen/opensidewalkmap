@@ -18,6 +18,14 @@ interface MapProps {
   viewport: ViewportProps;
   setViewport: (viewport: ViewportProps) => void;
 }
+/**
+ * Renders the main map
+ * 
+ * External Dependencies:
+ * - {@link https://visgl.github.io/react-map-gl/ | react-map-gl} - Provides map rendering components
+ * - {@link https://github.com/mapbox/mapbox-gl-geocoder/tree/main | mapbox-gl-geocoder} - enables users to search for locations
+ * @group Components
+ */
 export const MainMap = ({
   sidewalkFeatureCollection,
   savedBounds,

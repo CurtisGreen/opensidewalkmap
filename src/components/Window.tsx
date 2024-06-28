@@ -19,6 +19,15 @@ interface SearchProps {
   setSavedBounds: (savedBounds: LngLatBounds) => void;
   viewport: ViewportProps;
 }
+/**
+ * Window handles the overall arrangement of UI components.
+ * 
+ * Child Components:
+ * - {@link LoadingOverlay}
+ * - {@link ZoomModal}
+ * 
+ * @group Components
+ */
 export const Window = ({
   bounds,
   featureCollection,

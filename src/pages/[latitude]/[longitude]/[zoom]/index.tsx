@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { LngLatBounds } from "mapbox-gl";
 import { FeatureCollection } from "geojson";
 
@@ -8,6 +8,16 @@ import { MainMap } from "@/components/MainMap";
 import { validateViewport } from "@/utils/validateViewport";
 import { useRouter } from "next/router";
 
+/**
+ * MainPage renders the map from the URL parameters
+ * 
+ * Child Components:
+ * - {@link Window}
+ * - {@link MainMap}
+ * 
+ * @returns The MainPage component
+ * @group Pages
+ */
 export const MainPage = () => {
   const [bounds, setBounds] = useState<LngLatBounds>();
   const [savedBounds, setSavedBounds] = useState<LngLatBounds>();

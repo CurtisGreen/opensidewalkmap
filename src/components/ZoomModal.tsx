@@ -3,6 +3,9 @@ import { Dialog } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { ZoomModalProps } from "@/types/ZoomModalProps";
 
+/**
+ * @group Components
+ */
 export default function Modal({
   showZoomModal,
   setShowZoomModal,

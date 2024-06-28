@@ -1,5 +1,8 @@
 import React, { Dispatch, ReactNode, SetStateAction } from "react";
 
+/**
+ * Renders a checkbox
+*/
 export const CheckBox = ({
   children,
   isChecked,
