@@ -3,7 +3,12 @@
 	"entryPoints": ["src"],
 	"entryPointStrategy": "expand",
 	"excludeNotDocumented": false,
-	"projectDocuments": ["documents/**/*.md"],
 	"name": "OpenSidewalkMap",
+	"tsconfig": "tsconfig.json",
+	"plugin": [
+		"typedoc-plugin-merge-modules" //https://github.com/krisztianb/typedoc-plugin-merge-modules
+	],
+	"mergeModulesRenameDefaults": true,
+	"mergeModulesMergeMode": "project",
 	"out": "./docs/"
 }
