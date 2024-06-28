@@ -41,4 +41,11 @@ $ npm run dev
 ```
 
 The project will be accesible on http://localhost:3000
+
+
+## Building the Docs
+
+```bash
+$ npm run docs
+```
     

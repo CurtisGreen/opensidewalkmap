@@ -43,6 +43,7 @@ const Link = ({ href, children }: { href: string; children: any }) => (
 
 /**
  * Renders a modal window with information about the project
+ * @group Components
 */
 export default function InfoModal({
   showInfoModal,

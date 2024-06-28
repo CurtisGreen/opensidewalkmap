@@ -2,6 +2,7 @@ import React, { Dispatch, ReactNode, SetStateAction } from "react";
 
 /**
  * Renders a checkbox
+ * @group Components
 */
 export const CheckBox = ({
   children,
