@@ -41,4 +41,19 @@ $ npm run dev
 ```
 
 The project will be accesible on http://localhost:3000
-    
+## Project Structure
+This project is based off of the general structure of a `Next.js` application.
+For additional details see: https://nextjs.org/docs/getting-started/project-structure
+
+Key files and folders:
+- `next.config.js` configuration for Next.js
+- `.env.template` clone and modify this to set environment variables
+- `package.json` contains project metadata and dependencies
+- `tailwind.config.js` sets configuration options for Tailwind CSS framework
+- `src/`
+	- `pages/` folder and file structure under pages defines Next.js' routes
+		- `_app.tsx` Custom App component to initialize pages
+		- `_document.tsx` Custom Document component to augment the application's HTML and body tags
+	- `components/` reusable React components, utilized by Pages
+	- `config/defaults.ts` hard coded application defaults for user visits
+- `public/` static files
