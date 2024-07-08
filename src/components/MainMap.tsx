@@ -29,6 +29,7 @@ export const MainMap = ({
   const geolocateControlRef = useRef<any>(null);
   const router = useRouter();
   const [mapInstance, setMapInstance] = useState<MapboxMap>();
+  const paths = ["footway", "bridleway", "steps", "corridor", "path", "via_ferrata", "cycleway"];
 
   useEffect(() => {
     if (!mapInstance) return;
@@ -98,12 +99,36 @@ export const MainMap = ({
         <div ref={geocoderContainerRef} className="z-1 fixed top-2 right-12" />
         <Source type="geojson" data={sidewalkFeatureCollection}>
           <Layer
-            id="Data"
+            id="Paths"
             type="line"
+            filter={[
+              "match",
+                ["get", "highway"],
+                paths,
+                true,
+                false
+              ]} // Filter for true paths
             paint={{
               "line-color": "red",
               "line-opacity": 0.8,
               "line-width": 3,
+            }}
+          />
+          <Layer
+            id="Roads"
+            type="line"
+            filter={
+            ["match",
+                ["get", "highway"],
+                paths,
+                false,
+                true
+            ]} // Filter for non-paths (roads)
+            paint={{
+              "line-color": "red",
+              "line-opacity": 0.8,
+              "line-width": 2,
+              "line-dasharray": [1, 1 ],
             }}
           />
         </Source>
