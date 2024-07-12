@@ -102,11 +102,10 @@ export const MainMap = ({
             id="Paths"
             type="line"
             filter={[
-              "match",
+              "match", // https://docs.mapbox.com/style-spec/reference/expressions/#match
                 ["get", "highway"],
-                paths,
-                true,
-                false
+                paths, true, // return true if match found in array of recognized path values
+                false // return false as a fallback
               ]} // Filter for true paths
             paint={{
               "line-color": "red",
@@ -128,7 +127,7 @@ export const MainMap = ({
               "line-color": "red",
               "line-opacity": 0.8,
               "line-width": 2,
-              "line-dasharray": [1, 1 ],
+              "line-dasharray": [1, 1],
             }}
           />
         </Source>
