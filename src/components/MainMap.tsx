@@ -29,7 +29,16 @@ export const MainMap = ({
   const geolocateControlRef = useRef<any>(null);
   const router = useRouter();
   const [mapInstance, setMapInstance] = useState<MapboxMap>();
-  const paths = ["footway", "bridleway", "steps", "corridor", "path", "via_ferrata", "cycleway"];
+  const paths = [
+    "footway",
+    "bridleway",
+    "steps",
+    "corridor",
+    "path",
+    "via_ferrata",
+    "cycleway",
+    "pedestrian",
+  ];
 
   useEffect(() => {
     if (!mapInstance) return;
@@ -103,10 +112,11 @@ export const MainMap = ({
             type="line"
             filter={[
               "match", // https://docs.mapbox.com/style-spec/reference/expressions/#match
-                ["get", "highway"],
-                paths, true, // return true if match found in array of recognized path values
-                false // return false as a fallback
-              ]} // Filter for true paths
+              ["get", "highway"],
+              paths,
+              true, // return true if match found in array of recognized path values
+              false, // return false as a fallback
+            ]} // Filter for true paths
             paint={{
               "line-color": "red",
               "line-opacity": 0.8,
@@ -116,13 +126,7 @@ export const MainMap = ({
           <Layer
             id="Roads"
             type="line"
-            filter={
-            ["match",
-                ["get", "highway"],
-                paths,
-                false,
-                true
-            ]} // Filter for non-paths (roads)
+            filter={["match", ["get", "highway"], paths, false, true]} // Filter for non-paths (roads)
             paint={{
               "line-color": "red",
               "line-opacity": 0.8,
