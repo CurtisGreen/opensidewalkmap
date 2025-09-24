@@ -13,6 +13,7 @@ export const overpassQuery = async (bounds: LngLatBounds) => {
       way[highway=pedestrian];
       way[highway=path][foot=designated];
       way[highway=cycleway][foot=yes];
+      way[highway=cycleway][foot=designated];
       way["highway"~"^(motorway|trunk|primary|secondary|tertiary|unclassified|residential)?(_link)?$"]["sidewalk"~"^(both|left|right)?$"];
     )->.x1;
     nwr.x1->.result;
