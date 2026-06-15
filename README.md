@@ -2,6 +2,9 @@
 
 [OpenSidewalkMap](https://www.opensidewalkmap.com/)
 
+<img width="1443" height="910" alt="Screenshot 2026-06-15 at 4 18 15 PM" src="https://github.com/user-attachments/assets/4f16b1ed-534f-4546-a586-f7d822c5c7a0" />
+
+
 Use data from [OpenStreetMap](https://www.openstreetmap.org/) to highlight sidewalks on the map. Lets you easily see what places are accesible by foot and what sidewalks are missing
 ## Acknowledgements
 
